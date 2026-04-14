@@ -1,6 +1,6 @@
-type TaskId = `task_${string}`;
-type ProjectId = `proj_${string}`;
-type ResourceId = `res_${string}`;
+export type TaskId = `task_${string}`;
+export type ProjectId = `proj_${string}`;
+export type ResourceId = `res_${string}`;
 
 export type Category = "Engineering" | "Operations" | "Commissioning";
 export type TaskStatus = "planned" | "running" | "completed" | "cancelled";
@@ -36,4 +36,9 @@ export type Project = {
   id: ProjectId;
   name: string;
   color?: string;
+};
+
+export type TimeSlot = {
+  startMs: number;
+  endMs: number;
 };

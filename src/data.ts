@@ -1,4 +1,6 @@
-//We expect a flattened response from backend in this shape:
+import type { Category, Project, Resource, Task } from "./lib/types";
+
+// We expect a flattened response from backend in this shape:
 // {
 //   tasks: Task[],
 //   resources: Resource[],
@@ -7,48 +9,8 @@
 // const { tasks, resources, projects } = await fetchTimelineData();
 
 // const projectMap = Object.fromEntries(
-//   projects.map(p => [p.id, p.name])
+//   projects.map((p) => [p.id, p.name])
 // );
-
-type TaskId = `task_${string}`;
-type ProjectId = `proj_${string}`;
-type ResourceId = `res_${string}`;
-
-export type Category = "Engineering" | "Operations" | "Commissioning";
-export type TaskStatus = "planned" | "running" | "completed" | "cancelled";
-
-export interface Task {
-  id: TaskId;
-  projectId: ProjectId;
-  resourceId: ResourceId;
-  title: string;
-  description?: string;
-  category: Category;
-
-  startTimeMs: number;
-  endTimeMs: number;
-
-  status: TaskStatus;
-  priority: "low" | "medium" | "high";
-
-  metadata: {
-    createdAt: number;
-    updatedBy: string;
-  };
-}
-
-export interface Resource {
-  id: ResourceId;
-  name: string;
-  type: "telescope" | "antenna" | "receiver";
-  capabilities: Category[]; // Can this resource handle Engineering tasks?
-}
-
-export type Project = {
-  id: ProjectId;
-  name: string;
-  color?: string;
-};
 // April 13–17 2026 tasks (UNIX ms)
 const d = (dateStr: string) => new Date(dateStr).getTime();
 
@@ -225,16 +187,3 @@ export const CATEGORIES: Category[] = [
   "Operations",
   "Commissioning",
 ];
-
-// Mapping specific categories to standard Tailwind utility classes
-export const STATUS_COLORS: Record<string, string> = {
-  planned: "bg-slate-500/10 text-slate-400",
-  running: "bg-blue-500/10 text-blue-400",
-  completed: "bg-emerald-500/10 text-emerald-400",
-  cancelled: "bg-red-500/10 text-red-400",
-};
-export const CATEGORY_COLORS: Record<Category, string> = {
-  Engineering: "bg-blue-600/10 text-blue-600",
-  Commissioning: "bg-orange-500/10 text-orange-500",
-  Operations: "bg-green-600/10 text-green-600",
-};
