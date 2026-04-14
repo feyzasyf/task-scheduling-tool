@@ -1,4 +1,3 @@
-import { projects, resources } from "./data";
 import TopNav from "./components/TopNav";
 import Timeline from "./components/Timeline";
 import CreateTaskModal from "./components/CreateTaskModal";
@@ -13,9 +12,7 @@ function AppContent() {
       <main className="flex-1 overflow-hidden">
         <Timeline />
       </main>
-      {isCreateTaskModalOpen && (
-        <CreateTaskModal projects={projects} resources={resources} />
-      )}
+      {isCreateTaskModalOpen && <CreateTaskModal />}
     </div>
   );
 }

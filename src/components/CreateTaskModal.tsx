@@ -2,9 +2,7 @@ import { useMemo, useState } from "react";
 import { CATEGORIES } from "../data";
 import type {
   Category,
-  Project,
   ProjectId,
-  Resource,
   ResourceId,
   Task,
 } from "../lib/types";
@@ -90,21 +88,20 @@ function formatUtcTime(ms: number) {
   return `${String(hour12).padStart(2, "0")}:${minute} ${meridiem}`;
 }
 
-export default function CreateTaskModal({
-  projects,
-  resources,
-}: {
-  projects: Project[];
-  resources: Resource[];
-}) {
-  const { tasks: existingTasks } = useAppState();
+export default function CreateTaskModal() {
+  const { taskIds, tasksById, projectIds, projectsById, resourceIds, resourcesById } =
+    useAppState();
   const { createTask, closeCreateTaskModal } = useAppActions();
   const [form, setForm] = useState<FormState>(INITIAL_FORM_STATE);
   const [errorMessage, setErrorMessage] = useState("");
+  const existingTasks = useMemo(
+    () => taskIds.map((id) => tasksById[id]).filter((task): task is Task => Boolean(task)),
+    [taskIds, tasksById],
+  );
 
   const selectedResource = useMemo(
-    () => resources.find((resource) => resource.id === form.resourceId),
-    [form.resourceId, resources],
+    () => (form.resourceId ? resourcesById[form.resourceId] : undefined),
+    [form.resourceId, resourcesById],
   );
   const selectedDayRange = useMemo(
     () => parseDateToUtcDayRange(form.startDate),
@@ -287,11 +284,15 @@ export default function CreateTaskModal({
                 <option value="" disabled>
                   Select a project
                 </option>
-                {projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
-                  </option>
-                ))}
+                {projectIds.map((projectId) => {
+                  const project = projectsById[projectId];
+                  if (!project) return null;
+                  return (
+                    <option key={project.id} value={project.id}>
+                      {project.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
           </div>
@@ -314,11 +315,15 @@ export default function CreateTaskModal({
               <option value="" disabled>
                 Select a resource
               </option>
-              {resources.map((resource) => (
-                <option key={resource.id} value={resource.id}>
-                  {resource.name}
-                </option>
-              ))}
+              {resourceIds.map((resourceId) => {
+                const resource = resourcesById[resourceId];
+                if (!resource) return null;
+                return (
+                  <option key={resource.id} value={resource.id}>
+                    {resource.name}
+                  </option>
+                );
+              })}
             </select>
           </div>
 

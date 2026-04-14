@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { clsx } from "clsx";
-import { resources } from "../data";
 import TaskBar from "./TaskBar";
 import NowBar from "./NowBar";
 import useTimelineData from "../hooks/useTimelineData";
@@ -16,11 +15,16 @@ import {
 } from "../lib/constants";
 
 export default function Timeline() {
-  const { tasks, selectedCategory } = useAppState();
+  const { taskIds, tasksById, resourceIds, resourcesById, projectsById, selectedCategory } =
+    useAppState();
   const scrollRef = useRef<HTMLDivElement>(null);
   const hourLabels = buildHourLabels();
   const totalWidth = TOTAL_HOURS * HOUR_WIDTH;
-  const { tasksByResource, projectMap } = useTimelineData(tasks);
+  const { tasksByResource, projectMap } = useTimelineData({
+    taskIds,
+    tasksById,
+    projectsById,
+  });
 
   return (
     <div className="flex h-full w-full overflow-hidden bg-slate-950">
@@ -38,7 +42,10 @@ export default function Timeline() {
           </span>
         </div>
 
-        {resources.map((res) => (
+        {resourceIds.map((resourceId) => {
+          const res = resourcesById[resourceId];
+          if (!res) return null;
+          return (
           <div
             key={res.id}
             className="px-4 border-b border-slate-800/50 flex flex-col justify-center bg-slate-900"
@@ -57,7 +64,8 @@ export default function Timeline() {
                   } tasks`}
             </span>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Scroll area */}
@@ -99,7 +107,10 @@ export default function Timeline() {
           </div>
 
           {/* Rows */}
-          {resources.map((res, rowIdx) => (
+          {resourceIds.map((resourceId, rowIdx) => {
+            const res = resourcesById[resourceId];
+            if (!res) return null;
+            return (
             <div
               key={res.id}
               className={clsx(
@@ -130,9 +141,10 @@ export default function Timeline() {
                 />
               ))}
             </div>
-          ))}
+            );
+          })}
 
-          <NowBar resourceCount={resources.length} scrollContainer={scrollRef} />
+          <NowBar resourceCount={resourceIds.length} scrollContainer={scrollRef} />
         </div>
       </div>
     </div>

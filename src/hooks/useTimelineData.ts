@@ -1,23 +1,32 @@
 import { useMemo } from "react";
-import type { Task } from "../lib/types";
-import { projects } from "../data";
+import type { Project, ProjectId, ResourceId, Task, TaskId } from "../lib/types";
 
-export default function useTimelineData(tasks: Task[]) {
+export default function useTimelineData({
+  taskIds,
+  tasksById,
+  projectsById,
+}: {
+  taskIds: TaskId[];
+  tasksById: Record<TaskId, Task>;
+  projectsById: Record<ProjectId, Project>;
+}) {
   const projectMap = useMemo(() => {
-    const map: Record<string, string> = {};
-    projects.forEach((p) => {
-      map[p.id] = p.name;
+    const map: Record<ProjectId, string> = {} as Record<ProjectId, string>;
+    Object.values(projectsById).forEach((project) => {
+      map[project.id] = project.name;
     });
     return map;
-  }, []);
+  }, [projectsById]);
 
   const tasksByResource = useMemo(() => {
-    const map: Record<string, Task[]> = {};
-    tasks.forEach((task) => {
+    const map: Record<ResourceId, Task[]> = {} as Record<ResourceId, Task[]>;
+    taskIds.forEach((taskId) => {
+      const task = tasksById[taskId];
+      if (!task) return;
       if (!map[task.resourceId]) map[task.resourceId] = [];
       map[task.resourceId].push(task);
     });
     return map;
-  }, [tasks]);
+  }, [taskIds, tasksById]);
   return { projectMap, tasksByResource };
 }
