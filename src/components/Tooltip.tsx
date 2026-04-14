@@ -1,5 +1,5 @@
 import type { Task } from "../lib/types";
-import { CATEGORY_COLORS, STATUS_COLORS } from "../data";
+import { CATEGORY_COLORS, STATUS_COLORS } from "../lib/constants";
 
 export default function Tooltip({
   task,
