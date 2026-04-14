@@ -1,16 +1,27 @@
 import { useState } from "react";
 import { clsx } from "clsx";
-import { tasks as allTasks, STATUS_COLORS, CATEGORY_COLORS } from "../data";
-import { msToOffset, HOUR_WIDTH, formatTime } from "../lib/constants";
-import type { Task } from "../data";
-import useTimelineData from "../hooks/useTimelineData";
+import {
+  CATEGORY_COLORS,
+  STATUS_COLORS,
+  msToOffset,
+  HOUR_WIDTH,
+  formatTime,
+} from "../lib/constants";
+import type { Task } from "../lib/types";
 import Tooltip from "./Tooltip";
 
-export default function TaskBar({ task }: { task: Task }) {
+export default function TaskBar({
+  task,
+  projectName,
+  onDeleteTask,
+}: {
+  task: Task;
+  projectName: string;
+  onDeleteTask: (taskId: Task["id"]) => void;
+}) {
   const [hovered, setHovered] = useState(false);
   const x = msToOffset(task.startTimeMs);
   const width = Math.max(msToOffset(task.endTimeMs) - x, HOUR_WIDTH * 0.5);
-  const { projectMap } = useTimelineData(allTasks);
 
   return (
     <div
@@ -36,13 +47,25 @@ export default function TaskBar({ task }: { task: Task }) {
         {task.title}
       </span>
 
+      {hovered && (
+        <button
+          type="button"
+          aria-label={`Delete ${task.title}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            if (window.confirm(`Delete task "${task.title}"?`)) {
+              onDeleteTask(task.id);
+            }
+          }}
+          className="h-5 w-5 shrink-0 rounded bg-slate-900/70 text-slate-300 hover:bg-red-600 hover:text-white"
+        >
+          x
+        </button>
+      )}
+
       {/* Tooltip */}
       {hovered && (
-        <Tooltip
-          task={task}
-          formatTime={formatTime}
-          title={projectMap[task.projectId] || task.projectId}
-        />
+        <Tooltip task={task} formatTime={formatTime} title={projectName} />
       )}
     </div>
   );
