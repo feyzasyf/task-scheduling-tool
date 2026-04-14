@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { clsx } from "clsx";
-import { tasks as allTasks, resources } from "../data";
+import { resources } from "../data";
+import type { Task } from "../lib/types";
 import TaskBar from "./TaskBar";
 import useTimelineData from "../hooks/useTimelineData";
 import {
@@ -14,11 +15,17 @@ import {
   nowX,
 } from "../lib/constants";
 
-export default function Timeline() {
+export default function Timeline({
+  tasks,
+  onDeleteTask,
+}: {
+  tasks: Task[];
+  onDeleteTask: (taskId: Task["id"]) => void;
+}) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const hourLabels = buildHourLabels();
   const totalWidth = TOTAL_HOURS * HOUR_WIDTH;
-  const { tasksByResource } = useTimelineData(allTasks);
+  const { tasksByResource, projectMap } = useTimelineData(tasks);
 
   // Scroll to "now" on mount
   useEffect(() => {
@@ -117,7 +124,12 @@ export default function Timeline() {
 
               {/* Tasks */}
               {(tasksByResource[res.id] || []).map((task) => (
-                <TaskBar key={task.id} task={task} />
+                <TaskBar
+                  key={task.id}
+                  task={task}
+                  projectName={projectMap[task.projectId] || task.projectId}
+                  onDeleteTask={onDeleteTask}
+                />
               ))}
             </div>
           ))}
