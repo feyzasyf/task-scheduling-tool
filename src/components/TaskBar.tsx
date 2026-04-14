@@ -8,20 +8,20 @@ import {
   formatTime,
 } from "../lib/constants";
 import type { Task } from "../lib/types";
+import { useAppActions } from "../context/useAppState";
 import Tooltip from "./Tooltip";
 
 export default function TaskBar({
   task,
   projectName,
   dimmed,
-  onDeleteTask,
 }: {
   task: Task;
   projectName: string;
   dimmed: boolean;
-  onDeleteTask: (taskId: Task["id"]) => void;
 }) {
   const [hovered, setHovered] = useState(false);
+  const { deleteTask } = useAppActions();
   const x = msToOffset(task.startTimeMs);
   const width = Math.max(msToOffset(task.endTimeMs) - x, HOUR_WIDTH * 0.5);
 
@@ -57,7 +57,7 @@ export default function TaskBar({
           onClick={(event) => {
             event.stopPropagation();
             if (window.confirm(`Delete task "${task.title}"?`)) {
-              onDeleteTask(task.id);
+              deleteTask(task.id);
             }
           }}
           className="h-5 w-5 shrink-0 rounded bg-slate-900/70 text-slate-300 hover:bg-red-600 hover:text-white"

@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import type { Category } from "../lib/types";
 import { CATEGORIES } from "../data";
+import { useAppActions, useAppState } from "../context/useAppState";
 
 import { useState } from "react";
 
@@ -25,16 +26,10 @@ function ChevronDown() {
     </svg>
   );
 }
-export default function TopNav({
-  onCreateTaskClick,
-  selectedCategory,
-  onCategoryChange,
-}: {
-  onCreateTaskClick: () => void;
-  selectedCategory: Category | "All";
-  onCategoryChange: (category: Category | "All") => void;
-}) {
+export default function TopNav() {
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const { selectedCategory } = useAppState();
+  const { setSelectedCategory, openCreateTaskModal } = useAppActions();
   return (
     <header className="flex items-center gap-3 px-5 shrink-0 border-b border-slate-800 bg-slate-900 h-14">
       {/* Title */}
@@ -95,7 +90,7 @@ export default function TopNav({
               <button
                 key={cat}
                 onClick={() => {
-                  onCategoryChange(cat);
+                  setSelectedCategory(cat);
                   setCategoryOpen(false);
                 }}
                 className={clsx(
@@ -114,7 +109,7 @@ export default function TopNav({
 
       {/* Create task */}
       <button
-        onClick={onCreateTaskClick}
+        onClick={openCreateTaskModal}
         className="flex items-center gap-1.5 px-4 rounded-lg text-xs font-bold h-[34px] bg-blue-600 hover:bg-blue-500 text-white transition-colors shadow-lg shadow-blue-900/20"
       >
         <span className="text-lg leading-none mt-[-2px]">+</span>

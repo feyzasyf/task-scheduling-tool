@@ -9,6 +9,7 @@ import type {
   Task,
 } from "../lib/types";
 import { findAvailableTimeSlots, hasTimeConflict } from "../lib/utils";
+import { useAppActions, useAppState } from "../context/useAppState";
 
 type FormState = {
   title: string;
@@ -90,18 +91,14 @@ function formatUtcTime(ms: number) {
 }
 
 export default function CreateTaskModal({
-  existingTasks,
   projects,
   resources,
-  onCreateTask,
-  onClose,
 }: {
-  existingTasks: Task[];
   projects: Project[];
   resources: Resource[];
-  onCreateTask: (task: Task) => void;
-  onClose: () => void;
 }) {
+  const { tasks: existingTasks } = useAppState();
+  const { createTask, closeCreateTaskModal } = useAppActions();
   const [form, setForm] = useState<FormState>(INITIAL_FORM_STATE);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -211,7 +208,7 @@ export default function CreateTaskModal({
       return;
     }
 
-    onCreateTask(newTask);
+    createTask(newTask);
   };
 
   return (
@@ -466,7 +463,7 @@ export default function CreateTaskModal({
             <button
               type="button"
               className="h-9 rounded-md bg-slate-200 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-300"
-              onClick={onClose}
+              onClick={closeCreateTaskModal}
             >
               Cancel
             </button>

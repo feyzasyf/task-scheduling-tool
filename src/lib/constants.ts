@@ -7,9 +7,9 @@ export const HEADER_HEIGHT = 36;
 export const DATE_HEADER_HEIGHT = 28;
 
 export const STATUS_COLORS: Record<TaskStatus, string> = {
-  planned: "bg-slate-500/10 text-slate-400",
+  planned: "bg-emerald-500/10 text-emerald-400",
   running: "bg-blue-500/10 text-blue-400",
-  completed: "bg-emerald-500/10 text-emerald-400",
+  completed: "bg-slate-500/10 text-slate-400",
   cancelled: "bg-red-500/10 text-red-400",
 };
 

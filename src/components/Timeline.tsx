@@ -1,9 +1,9 @@
 import { useRef, useEffect } from "react";
 import { clsx } from "clsx";
 import { resources } from "../data";
-import type { Category, Task } from "../lib/types";
 import TaskBar from "./TaskBar";
 import useTimelineData from "../hooks/useTimelineData";
+import { useAppState } from "../context/useAppState";
 import {
   DATE_HEADER_HEIGHT,
   HEADER_HEIGHT,
@@ -15,15 +15,8 @@ import {
   nowX,
 } from "../lib/constants";
 
-export default function Timeline({
-  tasks,
-  selectedCategory,
-  onDeleteTask,
-}: {
-  tasks: Task[];
-  selectedCategory: Category | "All";
-  onDeleteTask: (taskId: Task["id"]) => void;
-}) {
+export default function Timeline() {
+  const { tasks, selectedCategory } = useAppState();
   const scrollRef = useRef<HTMLDivElement>(null);
   const hourLabels = buildHourLabels();
   const totalWidth = TOTAL_HOURS * HOUR_WIDTH;
@@ -143,7 +136,6 @@ export default function Timeline({
                     selectedCategory !== "All" &&
                     task.category !== selectedCategory
                   }
-                  onDeleteTask={onDeleteTask}
                 />
               ))}
             </div>
