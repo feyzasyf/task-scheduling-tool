@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { clsx } from "clsx";
 import { resources } from "../data";
-import type { Task } from "../lib/types";
+import type { Category, Task } from "../lib/types";
 import TaskBar from "./TaskBar";
 import useTimelineData from "../hooks/useTimelineData";
 import {
@@ -17,9 +17,11 @@ import {
 
 export default function Timeline({
   tasks,
+  selectedCategory,
   onDeleteTask,
 }: {
   tasks: Task[];
+  selectedCategory: Category | "All";
   onDeleteTask: (taskId: Task["id"]) => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -55,11 +57,20 @@ export default function Timeline({
         {resources.map((res) => (
           <div
             key={res.id}
-            className="px-4 border-b border-slate-800/50 flex items-center bg-slate-900"
+            className="px-4 border-b border-slate-800/50 flex flex-col justify-center bg-slate-900"
             style={{ height: ROW_HEIGHT }}
           >
             <span className="text-sm font-medium text-slate-300">
               {res.name}
+            </span>
+            <span className="mt-1 text-[11px] text-slate-500">
+              {selectedCategory === "All"
+                ? `All Categories - ${(tasksByResource[res.id] || []).length} tasks`
+                : `${selectedCategory} - ${
+                    (tasksByResource[res.id] || []).filter(
+                      (task) => task.category === selectedCategory,
+                    ).length
+                  } tasks`}
             </span>
           </div>
         ))}
@@ -128,6 +139,10 @@ export default function Timeline({
                   key={task.id}
                   task={task}
                   projectName={projectMap[task.projectId] || task.projectId}
+                  dimmed={
+                    selectedCategory !== "All" &&
+                    task.category !== selectedCategory
+                  }
                   onDeleteTask={onDeleteTask}
                 />
               ))}

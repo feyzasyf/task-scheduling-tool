@@ -13,10 +13,12 @@ import Tooltip from "./Tooltip";
 export default function TaskBar({
   task,
   projectName,
+  dimmed,
   onDeleteTask,
 }: {
   task: Task;
   projectName: string;
+  dimmed: boolean;
   onDeleteTask: (taskId: Task["id"]) => void;
 }) {
   const [hovered, setHovered] = useState(false);
@@ -32,6 +34,7 @@ export default function TaskBar({
         "absolute top-2 bottom-2 flex items-center gap-2 px-2 rounded-md cursor-pointer",
         "border border-l-[3px] transition-all",
         STATUS_COLORS[task.status],
+        dimmed && !hovered && "opacity-35 saturate-50",
         hovered ? "z-40 ring-1 ring-white/20 shadow-lg" : "z-10",
       )}
     >

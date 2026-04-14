@@ -27,13 +27,14 @@ function ChevronDown() {
 }
 export default function TopNav({
   onCreateTaskClick,
+  selectedCategory,
+  onCategoryChange,
 }: {
   onCreateTaskClick: () => void;
+  selectedCategory: Category | "All";
+  onCategoryChange: (category: Category | "All") => void;
 }) {
   const [categoryOpen, setCategoryOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | "All">(
-    "All",
-  );
   return (
     <header className="flex items-center gap-3 px-5 shrink-0 border-b border-slate-800 bg-slate-900 h-14">
       {/* Title */}
@@ -94,7 +95,7 @@ export default function TopNav({
               <button
                 key={cat}
                 onClick={() => {
-                  setSelectedCategory(cat);
+                  onCategoryChange(cat);
                   setCategoryOpen(false);
                 }}
                 className={clsx(
