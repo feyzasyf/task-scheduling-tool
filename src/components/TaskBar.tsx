@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { clsx } from "clsx";
-import {
-  CATEGORY_COLORS,
-  STATUS_COLORS,
-  msToOffset,
-  HOUR_WIDTH,
-  formatTime,
-} from "../lib/constants";
+import { CATEGORY_COLORS, STATUS_COLORS, HOUR_WIDTH } from "../lib/constants";
 import type { Task } from "../lib/types";
 import { useAppActions } from "../context/useAppState";
 import Tooltip from "./Tooltip";
+import { formatTime, msToOffset } from "../lib/utils";
 
 export default function TaskBar({
   task,

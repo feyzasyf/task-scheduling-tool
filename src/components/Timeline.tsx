@@ -1,72 +1,37 @@
 import { useRef } from "react";
-import { clsx } from "clsx";
-import TaskBar from "./TaskBar";
 import NowBar from "./NowBar";
+import ResourceSidebar from "./ResourceSidebar";
+import TimelineTaskRows from "./TimelineTaskRows";
 import useTimelineData from "../hooks/useTimelineData";
 import { useAppState } from "../context/useAppState";
 import {
-  DATE_HEADER_HEIGHT,
   HEADER_HEIGHT,
   HOUR_WIDTH,
-  ROW_HEIGHT,
-  SIDEBAR_WIDTH,
+  DATE_HEADER_HEIGHT,
   TOTAL_HOURS,
-  buildHourLabels,
 } from "../lib/constants";
+import { buildHourLabels } from "../lib/utils";
 
 export default function Timeline() {
-  const { taskIds, tasksById, resourceIds, resourcesById, projectsById, selectedCategory } =
+  const { taskIds, tasksById, resourceIds, resourcesById, selectedCategory } =
     useAppState();
   const scrollRef = useRef<HTMLDivElement>(null);
   const hourLabels = buildHourLabels();
   const totalWidth = TOTAL_HOURS * HOUR_WIDTH;
-  const { tasksByResource, projectMap } = useTimelineData({
+  const { taskIdsByResource } = useTimelineData({
     taskIds,
     tasksById,
-    projectsById,
   });
 
   return (
     <div className="flex h-full w-full overflow-hidden bg-slate-950">
-      {/* Sidebar */}
-      <div
-        className="shrink-0 border-r border-slate-800 overflow-y-auto bg-slate-900"
-        style={{ width: SIDEBAR_WIDTH }}
-      >
-        <div
-          className="sticky top-0 z-20 flex items-center px-4 border-b border-slate-800 bg-slate-900"
-          style={{ height: DATE_HEADER_HEIGHT + HEADER_HEIGHT }}
-        >
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-            Resources
-          </span>
-        </div>
-
-        {resourceIds.map((resourceId) => {
-          const res = resourcesById[resourceId];
-          if (!res) return null;
-          return (
-          <div
-            key={res.id}
-            className="px-4 border-b border-slate-800/50 flex flex-col justify-center bg-slate-900"
-            style={{ height: ROW_HEIGHT }}
-          >
-            <span className="text-sm font-medium text-slate-300">
-              {res.name}
-            </span>
-            <span className="mt-1 text-[11px] text-slate-500">
-              {selectedCategory === "All"
-                ? `All Categories - ${(tasksByResource[res.id] || []).length} tasks`
-                : `${selectedCategory} - ${
-                    (tasksByResource[res.id] || []).filter(
-                      (task) => task.category === selectedCategory,
-                    ).length
-                  } tasks`}
-            </span>
-          </div>
-          );
-        })}
-      </div>
+      <ResourceSidebar
+        resourceIds={resourceIds}
+        resourcesById={resourcesById}
+        taskIdsByResource={taskIdsByResource}
+        tasksById={tasksById}
+        selectedCategory={selectedCategory}
+      />
 
       {/* Scroll area */}
       <div ref={scrollRef} className="flex-1 overflow-auto scrollbar-hide">
@@ -106,45 +71,12 @@ export default function Timeline() {
             </div>
           </div>
 
-          {/* Rows */}
-          {resourceIds.map((resourceId, rowIdx) => {
-            const res = resourcesById[resourceId];
-            if (!res) return null;
-            return (
-            <div
-              key={res.id}
-              className={clsx(
-                "relative border-b border-slate-800/50 transition-colors hover:bg-slate-800/20",
-                rowIdx % 2 ? "bg-slate-900/40" : "bg-transparent",
-              )}
-              style={{ height: ROW_HEIGHT }}
-            >
-              {/* Vertical Hour Grid Lines */}
-              {Array.from({ length: TOTAL_HOURS }).map((_, h) => (
-                <div
-                  key={h}
-                  className="absolute top-0 bottom-0 border-l border-slate-800/30"
-                  style={{ left: h * HOUR_WIDTH }}
-                />
-              ))}
+          <TimelineTaskRows resourceIds={resourceIds} />
 
-              {/* Tasks */}
-              {(tasksByResource[res.id] || []).map((task) => (
-                <TaskBar
-                  key={task.id}
-                  task={task}
-                  projectName={projectMap[task.projectId] || task.projectId}
-                  dimmed={
-                    selectedCategory !== "All" &&
-                    task.category !== selectedCategory
-                  }
-                />
-              ))}
-            </div>
-            );
-          })}
-
-          <NowBar resourceCount={resourceIds.length} scrollContainer={scrollRef} />
+          <NowBar
+            resourceCount={resourceIds.length}
+            scrollContainer={scrollRef}
+          />
         </div>
       </div>
     </div>

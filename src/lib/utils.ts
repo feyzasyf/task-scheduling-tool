@@ -1,3 +1,4 @@
+import { HOUR_WIDTH, START, TOTAL_HOURS } from "./constants";
 import type { ResourceId, Task } from "./types";
 import type { TimeSlot } from "./types";
 
@@ -72,4 +73,28 @@ export function hasTimeConflict(tasks: Task[], candidate: Task) {
       candidate.startTimeMs < task.endTimeMs &&
       candidate.endTimeMs > task.startTimeMs,
   );
+}
+
+export function msToOffset(ms: number) {
+  return ((ms - START) / (1000 * 60 * 60)) * HOUR_WIDTH;
+}
+
+export function formatTime(ms: number) {
+  const d = new Date(ms);
+  const day = d.toUTCString().slice(0, 11);
+  const hh = String(d.getUTCHours()).padStart(2, "0");
+  const mm = String(d.getUTCMinutes()).padStart(2, "0");
+  return `${day} ${hh}:${mm}`;
+}
+
+export function buildHourLabels() {
+  const labels: { hour: number; label: string }[] = [];
+  for (let h = 0; h < TOTAL_HOURS; h++) {
+    if (h % 2 === 0) {
+      const date = new Date(START + h * 3600 * 1000);
+      const hh = date.getUTCHours();
+      labels.push({ hour: h, label: `${String(hh).padStart(2, "0")}:00` });
+    }
+  }
+  return labels;
 }

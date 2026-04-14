@@ -19,7 +19,7 @@ import {
   type AppActions,
 } from "./appStateStore";
 
-//convert arrays to maps for fast lookup
+//----------convert arrays to maps for fast lookup  start---------//
 function toTaskState(tasks: Task[]) {
   const tasksById = {} as Record<TaskId, Task>;
   const taskIds: TaskId[] = [];
@@ -49,6 +49,7 @@ function toProjectState(projects: Project[]) {
   });
   return { projectsById, projectIds };
 }
+//----------convert arrays to maps for fast lookup  end---------//
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [taskState, setTaskState] = useState(() => toTaskState(seedTasks));
