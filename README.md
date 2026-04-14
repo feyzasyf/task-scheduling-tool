@@ -4,6 +4,8 @@ A React + TypeScript scheduling UI for planning telescope/resource work on a tim
 
 ## Design
 
+See design.md for the design of the solution: [Design Document](./design.md)
+
 Figma file : [figma design](https://www.figma.com/design/dSavVH7uhoTITjJUEuQGVF/Task-scheduler?node-id=1-173&t=U5HOPH39eKvoMVkD-1)   
 [beta-mode figma design play](https://www.figma.com/make/k6AAGWUpiL37Hdyh8t8bam/Task-Scheduling-Application?fullscreen=1&t=tERFvmo3WIdUjCvM-1)
 
