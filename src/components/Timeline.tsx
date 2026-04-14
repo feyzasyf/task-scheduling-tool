@@ -1,7 +1,8 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { clsx } from "clsx";
 import { resources } from "../data";
 import TaskBar from "./TaskBar";
+import NowBar from "./NowBar";
 import useTimelineData from "../hooks/useTimelineData";
 import { useAppState } from "../context/useAppState";
 import {
@@ -12,7 +13,6 @@ import {
   SIDEBAR_WIDTH,
   TOTAL_HOURS,
   buildHourLabels,
-  nowX,
 } from "../lib/constants";
 
 export default function Timeline() {
@@ -21,15 +21,6 @@ export default function Timeline() {
   const hourLabels = buildHourLabels();
   const totalWidth = TOTAL_HOURS * HOUR_WIDTH;
   const { tasksByResource, projectMap } = useTimelineData(tasks);
-
-  // Scroll to "now" on mount
-  useEffect(() => {
-    if (!scrollRef.current) return;
-    const container = scrollRef.current;
-    requestAnimationFrame(() => {
-      container.scrollLeft = Math.max(0, nowX - container.clientWidth / 2);
-    });
-  }, []);
 
   return (
     <div className="flex h-full w-full overflow-hidden bg-slate-950">
@@ -141,21 +132,7 @@ export default function Timeline() {
             </div>
           ))}
 
-          {/* Now line */}
-          <div
-            className="absolute top-0 pointer-events-none z-30 w-px bg-red-500"
-            style={{
-              left: nowX,
-              height:
-                resources.length * ROW_HEIGHT +
-                DATE_HEADER_HEIGHT +
-                HEADER_HEIGHT,
-            }}
-          >
-            <div className="absolute top-0 -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-1 py-0.5 rounded-b shadow-sm">
-              NOW
-            </div>
-          </div>
+          <NowBar resourceCount={resources.length} scrollContainer={scrollRef} />
         </div>
       </div>
     </div>
