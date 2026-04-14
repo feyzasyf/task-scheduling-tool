@@ -26,10 +26,10 @@ export const resources: Resource[] = [
 /* -------------------- PROJECTS -------------------- */
 
 export const projects: Project[] = [
-  { id: "proj_1", name: "Exoplanet Survey", color: "#22c55e" },
-  { id: "proj_2", name: "Pulsar Timing", color: "#3b82f6" },
-  { id: "proj_3", name: "Maintenance Ops", color: "#f59e0b" },
-  { id: "proj_4", name: "Calibration Run", color: "#a855f7" },
+  { id: "proj_1", name: "Exoplanet Survey" },
+  { id: "proj_2", name: "Pulsar Timing" },
+  { id: "proj_3", name: "Maintenance Ops" },
+  { id: "proj_4", name: "Calibration Run" },
 ];
 
 /* -------------------- TASKS -------------------- */
