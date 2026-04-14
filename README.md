@@ -1,7 +1,7 @@
 # Task Scheduling Tool
 
-A React + TypeScript scheduling UI for planning telescope/resource work on a timeline.
-For demonstration purposes only.
+A React + TypeScript scheduling UI for planning telescope/resource work on a timeline.  
+For demonstration purposes only.  
 See live: [Demo link](https://task-scheduling-tool.vercel.app)
 
 ## Design
